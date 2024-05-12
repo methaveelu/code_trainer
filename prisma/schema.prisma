@@ -1,0 +1,181 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String @id @default(cuid())
+  name              String?
+  email             String? @unique
+  emailVerified     String?
+  image             String?
+  isAdmin           Boolean @default(false)
+  accounts          Account[]
+  sessions          Session[]
+  questionInfo     QuestionInfo[]
+  likedProblems     LikedProblems[]
+  dislikedProblems  DislikedProblems[]
+  starredProblems   StarredProblems[]
+  solvedProblems    SolvedProblems[]
+  questions         Question[]
+  comments          Comment []
+}
+
+model LikedProblems {
+  userId     String @default("")
+  questionInfoId String @default("")
+  user       User   @relation(fields: [userId], references: [id])
+  questionInfo   QuestionInfo @relation(fields: [questionInfoId], references: [id])
+
+  @@id([userId, questionInfoId])
+}
+
+model DislikedProblems {
+  userId     String @default("")
+  questionInfoId String @default("")
+  user       User   @relation(fields: [userId], references: [id])
+  questionInfo   QuestionInfo @relation(fields: [questionInfoId], references: [id])
+
+  @@id([userId, questionInfoId])
+}
+
+model StarredProblems {
+  userId          String @default("")
+  questionInfoId  String @default("")
+  user            User   @relation(fields: [userId], references: [id])
+  questionInfo    QuestionInfo @relation(fields: [questionInfoId], references: [id])
+
+  @@id([userId, questionInfoId])
+}
+
+model SolvedProblems {
+  userId          String @default("")
+  questionInfoId  String @default("")
+  createdAt       DateTime @default(now())
+  user            User   @relation(fields: [userId], references: [id])
+  questionInfo    QuestionInfo @relation(fields: [questionInfoId], references: [id])
+
+  @@id([userId, questionInfoId])
+}
+
+
+model Topic {
+  id          String @id @default(cuid())
+  slug        String @unique
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  questionInfo QuestionInfo[]
+}
+
+model QuestionInfo {
+  id                String @id @default(cuid())
+  title             String @unique
+  category          String? 
+  difficulty        String
+  likes             Int? @default(0)    
+  dislikes          Int? @default(0)
+  starred           Int? @default(0)
+  solved            Boolean? @default(false)
+  order             Int @default(autoincrement())
+  videoId           String?
+  link              String?
+  topicId           String
+  userId            String
+  attemptCount      Int? @default(0)
+  comments Comment[]
+  Question Question[]
+  likedProblems     LikedProblems[]
+  dislikedProblems  DislikedProblems[]
+  starredProblems   StarredProblems[]
+  solvedProblems    SolvedProblems[]
+
+  user User @relation(fields:[userId], references: [id], onDelete: Cascade)
+  topic Topic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+}
+
+model Question{
+  id                  String      @id @default(cuid())
+  title               String
+  problemStatement    String
+  constraints         String
+  order               Int?       @default(autoincrement())
+  starterCode         String
+  handlerFunction     String
+  starterFunctionName String
+  examples            String?
+  questionInfoId      String
+  userId              String?    
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+  
+
+  questionInfo QuestionInfo @relation(fields: [questionInfoId], references: [id])
+  user User? @relation(fields: [userId], references: [id])
+}
+
+
+model Comment {
+  id              String @id @default (cuid())
+  title           String
+  content         String
+  questionInfoId  String
+  userId          String
+  parentId        String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  parent        Comment? @relation("Comments", fields:[parentId], references: [id], onDelete: Cascade)
+  questionInfo  QuestionInfo @relation(fields: [questionInfoId], references: [id], onDelete: Cascade)
+  children      Comment[] @relation("Comments")
+  user          User @relation(fields: [userId], references: [id], onDelete: Cascade) 
+} 
+
+
+
+/////////////typical set up///////////
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
