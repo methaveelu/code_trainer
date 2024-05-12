@@ -34,7 +34,7 @@ export default function LoaderIDERight() {
                 </div>
             </div>
         </Split>
-        <QuestionIDEFooter  />
+        <QuestionIDEFooter handleSubmitAnswer={function (): void {} }  />
     </div>
     )
 }
