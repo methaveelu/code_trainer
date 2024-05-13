@@ -36,6 +36,7 @@ export default async function AttemptQuestionPage({params}: AttemptQuestionPageP
       questionDetails={initialData?.questionDetails} 
       questionInfo={initialData?.questionInfo} 
       slug={slug} 
+      questionId={questionId}
     />
   )
 }
