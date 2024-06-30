@@ -3,8 +3,7 @@ import Split from 'react-split'
 import QuestionDescription from './question-description'
 import Playground from './question-IDE';
 import { Suspense } from 'react';
-// import Loader from '../Loader/LoaderIDE';
-import LoaderIDE from '../Loader/LoaderIDE';
+import Loading from '../Loader/Loading';
 import { useState, useEffect } from 'react';
 
 interface WorkSpaceProps {
@@ -36,7 +35,7 @@ export default function WorkSpace(
   return (
     <div>
     {loading? (
-      <LoaderIDE/>
+      <Loading/>
     ):(
       // <Suspense fallback={<LoaderIDE/>}>
     <Split className="split h-screen border border-t-slate-700">

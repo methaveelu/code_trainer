@@ -10,7 +10,7 @@ export default async function TopicList() {
   const renderTopics = topics.map(topic =>{
     return (
       <div key={topic.id} >
-        <Link href={paths.topicShow(topic.slug)}>
+        <Link prefetch={true} href={paths.topicShow(topic.slug)}>
           <Chip color='warning' variant="shadow">
             {topic.slug}
           </Chip>
