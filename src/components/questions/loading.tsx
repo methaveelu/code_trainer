@@ -1,6 +1,6 @@
 import Split from "react-split"
-import LoaderIDELeft from "./LoaderIDELeft"
-import LoaderIDERight from "./LoaderIDERight"
+import LoaderIDELeft from "../Loader/LoaderIDELeft"
+import LoaderIDERight from "../Loader/LoaderIDERight"
 
 export default function Loading(){
     return (

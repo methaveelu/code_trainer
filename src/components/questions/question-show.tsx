@@ -3,7 +3,7 @@ import Split from 'react-split'
 import QuestionDescription from './question-description'
 import Playground from './question-IDE';
 import { Suspense } from 'react';
-import Loading from '../Loader/Loading';
+import Loading from './loading';
 import { useState, useEffect } from 'react';
 
 interface WorkSpaceProps {
